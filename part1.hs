@@ -97,10 +97,34 @@ data Void
 -- (a -> b, a -> c) === a -> (b, c)
 ----------------------------------------
 
-to :: (a -> b, a -> c) -> (a -> (b, c))
-to (f, g) = (\a -> (f a, g a))
-
-from :: (a -> (b, c)) -> (a -> b, a -> c)
-from f = (fst . f, snd . f)
-
---TODO Add tests
+--to :: (a -> b, a -> c) -> (a -> (b, c))
+--to (f, g) = (\a -> (f a, g a))
+--
+--from :: (a -> (b, c)) -> (a -> b, a -> c)
+--from f = (fst . f, snd . f)
+--
+--f1 :: Bool -> Int
+--f1 x = if x then 1 else 0
+--
+--f2 :: Bool -> String
+--f2 x = if x then "true" else "false"
+--
+--foo :: (Bool -> Int, Bool -> String)
+--foo = (f1, f2)
+--
+--bar :: (Bool -> (Int, String))
+--bar x = (if x then 1 else 0, if x then "true" else "false")
+--
+--foo2 :: (Bool -> Int, Bool -> String)
+--foo2 = from . to $ foo
+--
+--bar2 :: (Bool -> (Int, String))
+--bar2 = to . from $ bar
+--
+---- Should be True
+--check :: Bool
+--check = all id [check1, check2, check3, check4] where
+--    check1 = (fst foo True, snd foo True) == (fst foo2 True, snd foo2 True)
+--    check2 = (fst foo False, snd foo False) == (fst foo2 False, snd foo2 False)
+--    check3 = (bar True) == (bar2 True)
+--    check4 = (bar False) == (bar2 False)
