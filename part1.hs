@@ -146,7 +146,7 @@ data Void
 ----------------------------------------
 
 -- This one is not in the post, but it's, I think, the
--- equivalent to (a^b * a^c) == a^(b+c)
+-- equivalent to (c^a * c^b) == c^(a+b)
 
 --to :: (a -> c, b -> c) -> (Add a b) -> c
 --to f = g where
