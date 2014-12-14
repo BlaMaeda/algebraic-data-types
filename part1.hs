@@ -9,6 +9,8 @@ data Mul a b = Mul a b deriving (Show)
 -- Zero
 data Void
 
+-- Uncomment a section for testing the transformations
+
 ----------------------------------------
 ---------- LAWS FOR SUM TYPES ----------
 ----------------------------------------
@@ -123,8 +125,50 @@ data Void
 --
 ---- Should be True
 --check :: Bool
---check = all id [check1, check2, check3, check4] where
+--check = and [check1, check2, check3, check4] where
 --    check1 = (fst foo True, snd foo True) == (fst foo2 True, snd foo2 True)
 --    check2 = (fst foo False, snd foo False) == (fst foo2 False, snd foo2 False)
 --    check3 = (bar True) == (bar2 True)
 --    check4 = (bar False) == (bar2 False)
+
+----------------------------------------
+-- a -> (b -> c) === (b,a) -> c
+----------------------------------------
+
+--to :: (a -> b -> c) -> ((a, b) -> c)
+--to f = (\x -> f (fst x) (snd x))
+--
+--from :: ((a, b) -> c) -> (a -> b -> c)
+--from f = (\x -> (\y -> f (x, y)))
+
+----------------------------------------
+-- (a -> c, b -> c) === (Add a b) -> c
+----------------------------------------
+
+-- This one is not in the post, but it's, I think, the
+-- equivalent to (a^b * a^c) == a^(b+c)
+
+--to :: (a -> c, b -> c) -> (Add a b) -> c
+--to f = g where
+--    g (AddL x) = (fst f) x
+--    g (AddR x) = (snd f) x
+--
+--from :: ((Add a b) -> c) -> (a -> c, b -> c)
+--from f = (g, h) where
+--    g x = f (AddL x)
+--    h x = f (AddR x)
+--
+--foo :: (Int -> String, Bool -> String)
+--foo = (show, show)
+--
+--bar :: ((Add Int Bool) -> String)
+--bar (AddL x) = show x
+--bar (AddR x) = show x
+--
+---- Should be True
+--check :: Bool
+--check = and [check1, check2, check3, check4] where
+--    check1 = (fst foo 5) == (fst (from . to $ foo) 5)
+--    check2 = (snd foo True) == (snd (from . to $ foo) True)
+--    check3 = (bar (AddL 5)) == (to . from $ bar) (AddL 5)
+--    check4 = (bar (AddR True)) == (to . from $ bar) (AddR True)
